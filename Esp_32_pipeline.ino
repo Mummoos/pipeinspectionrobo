@@ -17,9 +17,9 @@ unsigned int obst_dist;
 #define ESP32CAM_subscribe_TOPIC   "motor"
 const int bufferSize = 1024 * 23; // 23552 bytes
 
-const int TRIGGER_PIN_1 = 21; //ultrasonic sensor infront of boat
-const int ECHO_PIN_1 = 19;
-const int MAX_DISTANCE = 150;
+const int TRIGGER_PIN_1 = 32; //ultrasonic sensor infront of boat
+const int ECHO_PIN_1 = 35;
+const int MAX_DISTANCE = 100;
 NewPing sonar1(TRIGGER_PIN_1, ECHO_PIN_1, MAX_DISTANCE);
 
 WiFiClientSecure net = WiFiClientSecure();
@@ -98,16 +98,16 @@ void Backward() {
   digitalWrite(D1LB, HIGH);
 }
 void Left() {
-  digitalWrite(D1RA, HIGH);
-  digitalWrite(D1RB, LOW);
-  digitalWrite(D1LA, LOW);
-  digitalWrite(D1LB, HIGH);
-}
-void Right() {
   digitalWrite(D1RA, LOW);
   digitalWrite(D1RB, HIGH);
   digitalWrite(D1LA, HIGH);
   digitalWrite(D1LB, LOW);
+}
+void Right() {
+  digitalWrite(D1RA, HIGH);
+  digitalWrite(D1RB, LOW);
+  digitalWrite(D1LA, LOW);
+  digitalWrite(D1LB, HIGH);
 }
 void Stop() {
   digitalWrite(D1RA, LOW);
@@ -122,25 +122,22 @@ String msg = payload;
   if (msg == "F"){
     Forward();
     Serial.print("forward movement");
-    delay(200);
-    Stop();
+   delay(1000);
     }
     else if(msg == "B"){
     Backward();
     Serial.print("backward movement");
-    delay(200);
-    Stop();
+    delay(1000);
     }
     else if(msg == "R"){
     Right();
-    delay(200);
-    Stop();
-    Serial.print("right movement");}
+     
+    Serial.print("right movement");
+     delay(700);}
     else if (msg == "L"){
     Left();
     Serial.print("Left movement");
-    delay(200);
-    Stop();
+     delay(700);
     }else{
       Stop();
     }
@@ -184,12 +181,16 @@ LPG = 1;
   
  } 
  ultrasonic_sensor();
- if (obst_dist =0 && obst_dist>= 100){
+ if (obst_dist ==0 || obst_dist>= 50){
   US =1;
  }
  else {
-  US = 0;
+  US =0;
  }
+ Serial.print("US =");
+ Serial.println(US);
+ Serial.print("lpg =");
+ Serial.println(LPG);
  publishMessage();
  client.loop();
   
